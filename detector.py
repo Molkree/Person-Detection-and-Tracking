@@ -45,7 +45,7 @@ class PersonDetector(object):
                od_graph_def.ParseFromString(serialized_graph)
                tf.import_graph_def(od_graph_def, name='')
 
-            self.sess = tf.Session(graph=self.detection_graph, config=config)
+            self.sess = tf.compat.v1.Session(graph=self.detection_graph, config=config)
             self.image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
 
             # Each box represents a part of the image where a particular object was detected.
