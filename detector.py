@@ -34,7 +34,7 @@ class PersonDetector(object):
         self.detection_graph = tf.Graph()
 
         # configuration for possible GPU use
-        config = tf.ConfigProto()
+        config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = True
         # load frozen tensorflow detection model and initialize
         # the tensorflow graph
