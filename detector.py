@@ -93,58 +93,59 @@ class PersonDetector(object):
                          13: {'id': 13, 'name': u'stop sign'},
                          14: {'id': 14, 'name': u'parking meter'}}
 
-        with self.detection_graph.as_default():
-              image_expanded = np.expand_dims(image, axis=0)
-              (boxes, scores, classes, num_detections) = self.sess.run(
-                  [self.boxes, self.scores, self.classes, self.num_detections],
-                  feed_dict={self.image_tensor: image_expanded})
+        with tf.device('/GPU:0'):
+            with self.detection_graph.as_default():
+                  image_expanded = np.expand_dims(image, axis=0)
+                  (boxes, scores, classes, num_detections) = self.sess.run(
+                      [self.boxes, self.scores, self.classes, self.num_detections],
+                      feed_dict={self.image_tensor: image_expanded})
 
-              if visual == True:
-                  visualization_utils.visualize_boxes_and_labels_on_image_array(
-                      image,
-                      np.squeeze(boxes),
-                      np.squeeze(classes).astype(np.int32),
-                      np.squeeze(scores),
-                      category_index,
-                      use_normalized_coordinates=True,
-                      min_score_thresh=.4,
-                      line_thickness=3)
+                  if visual == True:
+                      visualization_utils.visualize_boxes_and_labels_on_image_array(
+                          image,
+                          np.squeeze(boxes),
+                          np.squeeze(classes).astype(np.int32),
+                          np.squeeze(scores),
+                          category_index,
+                          use_normalized_coordinates=True,
+                          min_score_thresh=.4,
+                          line_thickness=3)
 
-                  plt.figure(figsize=(9,6))
-                  plt.imshow(image)
-                  plt.show()
+                      plt.figure(figsize=(9,6))
+                      plt.imshow(image)
+                      plt.show()
 
-              boxes     = np.squeeze(boxes)
-              classes   = np.squeeze(classes)
-              scores    = np.squeeze(scores)
+                  boxes     = np.squeeze(boxes)
+                  classes   = np.squeeze(classes)
+                  scores    = np.squeeze(scores)
 
-              cls = classes.tolist()
+                  cls = classes.tolist()
 
-              # The ID for car is 3
-              idx_vec = [i for i, v in enumerate(cls) if ((v == 1) and (scores[i] > 0.3))]
+                  # The ID for car is 3
+                  idx_vec = [i for i, v in enumerate(cls) if ((v == 1) and (scores[i] > 0.3))]
 
-              if len(idx_vec) == 0:
-                  self.car_boxes = []
-                  print('no detections!')
+                  if len(idx_vec) == 0:
+                      self.car_boxes = []
+                      print('no detections!')
 
-              else:
-                  tmp_car_boxes = []
-                  for idx in idx_vec:
-                      dim = image.shape[0:2]
-                      box = self.box_normal_to_pixel(boxes[idx], dim)
-                      box_h = box[2] - box[0]
-                      box_w = box[3] - box[1]
-                      ratio = box_h / (box_w + 0.01)
+                  else:
+                      tmp_car_boxes = []
+                      for idx in idx_vec:
+                          dim = image.shape[0:2]
+                          box = self.box_normal_to_pixel(boxes[idx], dim)
+                          box_h = box[2] - box[0]
+                          box_w = box[3] - box[1]
+                          ratio = box_h / (box_w + 0.01)
 
-                      #if ((ratio < 0.8) and (box_h>20) and (box_w>20)):
-                      tmp_car_boxes.append(box)
-                      print(box, ', confidence: ', scores[idx], 'ratio:', ratio)
-                      '''
-                      else:
-                          print('wrong ratio or wrong size, ', box, ', confidence: ', scores[idx], 'ratio:', ratio)
-                      '''
+                          #if ((ratio < 0.8) and (box_h>20) and (box_w>20)):
+                          tmp_car_boxes.append(box)
+                          print(box, ', confidence: ', scores[idx], 'ratio:', ratio)
+                          '''
+                          else:
+                              print('wrong ratio or wrong size, ', box, ', confidence: ', scores[idx], 'ratio:', ratio)
+                          '''
 
-                  self.car_boxes = tmp_car_boxes
+                      self.car_boxes = tmp_car_boxes
 
         return self.car_boxes
 
