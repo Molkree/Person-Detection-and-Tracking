@@ -15,7 +15,7 @@ cwd = os.path.dirname(os.path.realpath(__file__))
 #os.chdir(cwd+'/models')
 import visualization_utils
 
-global device_name = "gpu"
+global device_name
 
 class PersonDetector(object):
     def __init__(self):
@@ -156,6 +156,7 @@ if __name__ == '__main__':
         os.chdir(cwd)
         TEST_IMAGE_PATHS = glob(os.path.join('test_images/', '*.jpg'))
 
+        device_name = "gpu"
         if (len(sys.argv) > 1):
             device_name = sys.argv[1]  # Choose device from cmd line. Options: gpu or cpu
         if device_name == "gpu":
