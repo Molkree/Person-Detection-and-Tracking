@@ -15,7 +15,7 @@ cwd = os.path.dirname(os.path.realpath(__file__))
 #os.chdir(cwd+'/models')
 import visualization_utils
 
-global device_name
+global device_name = "gpu"
 
 class PersonDetector(object):
     def __init__(self):
