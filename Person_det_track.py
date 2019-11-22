@@ -203,7 +203,14 @@ def pipeline(img):
     return img
 
 if __name__ == "__main__":
-    det = detector.PersonDetector()
+    device_name = "gpu"
+    if (len(sys.argv) > 2):
+        device_name = sys.argv[2]  # Choose device from cmd line. Options: gpu or cpu
+    if device_name == "gpu":
+        device_name = "/gpu:0"
+    else:
+        device_name = "/cpu:0"
+    det = detector.PersonDetector(device_name)
 
     if debug: # test on a sequence of images
         images = [plt.imread(file) for file in glob.glob('./test_images/*.jpg')]
