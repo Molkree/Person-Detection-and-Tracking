@@ -15,11 +15,9 @@ cwd = os.path.dirname(os.path.realpath(__file__))
 #os.chdir(cwd+'/models')
 import visualization_utils
 
-global device_name
-
 class PersonDetector(object):
     def __init__(self):
-        global device_name
+        self.device_name = "gpu"
         self.car_boxes = []
 
         os.chdir(cwd)
@@ -41,7 +39,7 @@ class PersonDetector(object):
         # load frozen tensorflow detection model and initialize
         # the tensorflow graph
         tf.debugging.set_log_device_placement(True)
-        with tf.device(device_name):
+        with tf.device(self.device_name):
             with self.detection_graph.as_default():
                 od_graph_def = tf.compat.v1.GraphDef()
                 with tf.io.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
@@ -95,7 +93,7 @@ class PersonDetector(object):
                          13: {'id': 13, 'name': u'stop sign'},
                          14: {'id': 14, 'name': u'parking meter'}}
 
-        with tf.device(device_name):
+        with tf.device(self.device_name):
             with self.detection_graph.as_default():
                   image_expanded = np.expand_dims(image, axis=0)
                   (boxes, scores, classes, num_detections) = self.sess.run(
@@ -152,7 +150,6 @@ class PersonDetector(object):
         return self.car_boxes
 
 if __name__ == '__main__':
-        det = PersonDetector()
         os.chdir(cwd)
         TEST_IMAGE_PATHS = glob(os.path.join('test_images/', '*.jpg'))
 
@@ -163,6 +160,8 @@ if __name__ == '__main__':
             device_name = "/gpu:0"
         else:
             device_name = "/cpu:0"
+
+        det = PersonDetector(device_name=device_name)
 
         for i, image_path in enumerate(TEST_IMAGE_PATHS):
             print('\n*************************************************')
