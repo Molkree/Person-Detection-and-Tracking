@@ -17,8 +17,8 @@ cwd = os.path.dirname(os.path.realpath(__file__))
 import visualization_utils
 
 class PersonDetector(object):
-    def __init__(self):
-        self.device_name = "gpu"
+    def __init__(self, device_name="gpu"):
+        self.device_name = device_name
         self.car_boxes = []
 
         os.chdir(cwd)
@@ -162,7 +162,7 @@ if __name__ == '__main__':
         else:
             device_name = "/cpu:0"
 
-        det = PersonDetector(device_name=device_name)
+        det = PersonDetector(device_name)
 
         for i, image_path in enumerate(TEST_IMAGE_PATHS):
             print('\n*************************************************')
