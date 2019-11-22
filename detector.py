@@ -19,7 +19,7 @@ global device_name
 
 class PersonDetector(object):
     def __init__(self):
-
+        global device_name
         self.car_boxes = []
 
         os.chdir(cwd)
