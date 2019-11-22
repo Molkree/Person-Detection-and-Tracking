@@ -204,8 +204,8 @@ def pipeline(img):
 
 if __name__ == "__main__":
     device_name = "gpu"
-    if (len(sys.argv) > 2):
-        device_name = sys.argv[2]  # Choose device from cmd line. Options: gpu or cpu
+    if (len(sys.argv) > 1):
+        device_name = sys.argv[1]  # Choose device from cmd line. Options: gpu or cpu
     if device_name == "gpu":
         device_name = "/gpu:0"
     else:
@@ -228,11 +228,11 @@ if __name__ == "__main__":
         # clip.write_videofile(output, audio=False)
         #cap = cv2.VideoCapture(1)
         out_name = 'output.avi'
-        if (len(sys.argv) < 2):
+        if (len(sys.argv) < 3):
             cap = cv2.VideoCapture('http://192.168.1.250:7001')
         else:
-            cap = cv2.VideoCapture(sys.argv[1])
-            out_name = sys.argv[1][:-4] # remove .mp4
+            cap = cv2.VideoCapture(sys.argv[2])
+            out_name = sys.argv[2][:-4] # remove .mp4
             out_name += '_output.mp4'
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out = cv2.VideoWriter(out_name, fourcc, 22.0, (1280, 720))
